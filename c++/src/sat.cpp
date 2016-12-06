@@ -59,13 +59,20 @@ cnf_t cnf(const vector<cls_t> & clauses) {
 void ajouteClause(const cls_t & clause, cnf_t & cnf) {
   set< lit_t >::const_iterator it;
   int clauseidx;
+  size_t minTaille;
 
   cnf.clauses.push_back(clause);
   clauseidx = cnf.clauses.size() - 1;
 
   for (it = clause.litteraux.begin(); it != clause.litteraux.end(); ++it) {
-    if (*it + 1 >= cnf.index.size())
-      cnf.index.resize(*it + 2);
+    minTaille = *it + 1;
+    if (positif(*it))
+      minTaille++;
+    std::cout << "index[" << *it << "] = " << &cnf.clauses[clauseidx] << " (" << clauseidx << ")" << std::endl;
+    if (minTaille > cnf.index.size()) {
+      std::cout << "resize " << minTaille << std::endl;
+      cnf.index.resize(minTaille);
+    }
     cnf.index[*it].push_back(&cnf.clauses[clauseidx]);
   }
 }
@@ -115,14 +122,22 @@ val_t evaluer_clause(const etat_t & etat, const cls_t & cls) {
 }
 
 val_t evaluer_cnf(const etat_t & etat, const cnf_t & cnf, lit_t l) {
-  vector< cls_t >::const_iterator it;
+  vector< cls_t* >::const_iterator it;
+  vector< cls_t >::const_iterator hitachi;
   bool indet = false;
   val_t v;
 
   l = oppose(l);
 
+  std::cout << "lit = " << l << std::endl;
+  for (hitachi = cnf.clauses.begin(); hitachi != cnf.clauses.end(); ++hitachi) {
+    std::cout << &*hitachi  << " ";
+  }
+
+  std::cout << std::endl;
   for (it = cnf.index[l].begin(); it != cnf.index[l].end(); ++it) {
-    v = evaluer_clause(etat, *it);
+    std::cout << "clauseaddr " << *it <<  std::endl;
+    v = evaluer_clause(etat, **it);
     if (v == faux)
       return faux;
     if (v == indeterminee)
@@ -140,6 +155,7 @@ infos_retour_arriere_t affecte(etat_t & etat, lit_t & lit) {
   i = lit2var(lit);
   res.litteral_affecte = lit;
   res.variable_precedement_affectee = etat.derniere_affectee;
+  std::cout << "etatsize " << etat.valeurs.size() << " i.num " << i.num << endl;
   if (positif(lit))
     etat.valeurs[i.num] = vrai;
   else
@@ -195,7 +211,7 @@ bool cherche(etat_t & etat, cnf_t & cnf) {
 
   ira = affecte(etat, lit); // on ira au lit si l'etat est fatigué
 
-  res = evaluer_cnf(etat, cnf);
+  res = evaluer_cnf(etat, cnf, lit);
 
   if (res == vrai)
     return cherche(etat, cnf);

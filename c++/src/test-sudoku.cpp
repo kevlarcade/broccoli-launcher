@@ -3,7 +3,7 @@
 #include <UnitTest++.h>
 
 TEST(genere_probleme_sat) {
-  sudoku count_dooku;
+  sudoku_t count_dooku;
   count_dooku.resize(2);
   count_dooku[0].push_back(1);
   count_dooku[0].push_back(0);

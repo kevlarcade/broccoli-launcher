@@ -99,7 +99,7 @@ val_t evaluer_clause(const etat_t & etat, const cls_t & cls);
 /**
   Evalue une formule conjonctive en fonction des valeurs de variables.
   */
-val_t evaluer_cnf(const etat_t & etat, const cnf_t & cnf);
+val_t evaluer_cnf(const etat_t & etat, const cnf_t & cnf, lit_t l);
 
 /**
   Change la valeur de la variable correspondant au littéral. Si le littéral est
