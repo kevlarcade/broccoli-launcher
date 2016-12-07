@@ -42,6 +42,8 @@ lit_t oppose(lit_t l);
 ////////////////////////////////////////////////////////////////////// Clauses
 struct cls_t {
   set<lit_t> litteraux;
+  bool est_vrai;
+  int nb_indet;
 };
 
 cls_t clause(const set<lit_t> & litteraux);
@@ -51,7 +53,7 @@ void ajouteLitteral(lit_t l, cls_t & cls);
 //conjonctives
 struct cnf_t {
   vector<cls_t> clauses;
-  vector< vector<cls_t*> > index;
+  vector< vector<int> > index;
 };
 
 cnf_t cnf(const vector<cls_t> & clauses);
@@ -106,14 +108,14 @@ val_t evaluer_cnf(const etat_t & etat, const cnf_t & cnf, lit_t l);
   positif, la variable aura la valeur vrai, s'il est négatif, elle aura la
   valeur faux.
   */
-infos_retour_arriere_t affecte(etat_t & etat, lit_t & lit);
+infos_retour_arriere_t affecte(etat_t & etat, lit_t & lit, cnf_t &cnf);
 
 /**
   Rétablit l'état à sa valeur précédente en utilisant les informations
   contenues dans infos.
   */
 void retour_arriere(etat_t & etat, lit_t & lit, const infos_retour_arriere_t &
-    infos);
+    infos, cnf_t &cnf);
 
 /**
   Choisit une variable et une valeur à affecter à cette variable.  Renvoie un
