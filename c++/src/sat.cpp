@@ -159,8 +159,7 @@ infos_retour_arriere_t affecte(etat_t & etat, lit_t & lit, cnf_t &cnf) {
   for (it = cnf.index[lit].begin(); it != cnf.index[lit].end(); ++it) {
     cls_t &cls = cnf.clauses[*it];
     cls.nb_indet--;
-    if (cls.nb_indet == 0)
-      cls.est_vrai = true;
+    cls.est_vrai = true;
   }
 
   olit = oppose(lit);
