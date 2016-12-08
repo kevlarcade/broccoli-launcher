@@ -16,6 +16,7 @@ OBJECTS := $(filter-out $(MAINS) $(TEST_OBJECTS),$(ALLOBJECTS))
 LDDEPS := -lm
 TEST_LDDEPS := $(LDDEPS) -L../unittest-cpp -lUnitTest++
 CXXFLAGS := -Wall -Wextra -std=c++0x -I../unittest-cpp/src -ggdb3
+#CXXFLAGS := -Wall -Wextra -std=c++0x -I../unittest-cpp/src -O3
 EXECUTABLES := ../sat ../sudoku2dimacs ../res2sudoku ../run-test
 UNITTEST := ../unittest-cpp/libUnitTest++.a
 $(UNITTEST):
