@@ -132,7 +132,7 @@ void genere_probleme_sat(ostream& output, const sudoku_t& sudoku) {
             lit.push_back(l_case_v(n2, i * n + k, j * n + l, v));
           }
         }
-        //exactement_1_parmi_n(output, lit);
+        exactement_1_parmi_n(output, lit);
       }
     }
   }
