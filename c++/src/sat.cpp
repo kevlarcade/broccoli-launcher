@@ -143,10 +143,6 @@ infos_retour_arriere_t affecte(etat_t & etat, lit_t & lit, cnf_t &cnf) {
   vector< int >::const_iterator it;
   lit_t olit;
 
-  std::cout << "#var ";
-  if (!positif(lit))
-    cout << "-";
-  cout << lit2var(lit).num << std::endl;
   i = lit2var(lit);
   res.litteral_affecte = lit;
   res.variable_precedement_affectee = etat.derniere_affectee;
@@ -205,35 +201,23 @@ lit_t choisit_litteral(const etat_t & etat, const cnf_t & jean) {
   vector< cls_t >::const_iterator it;
   set< lit_t >::const_iterator wars;
   vector< val_t >::const_iterator it2;
-  cout << "valll " << valeur(etat, 9) <<endl;
+  unsigned int i;
 
-  for (it = jean.clauses.begin(); it != jean.clauses.end(); ++it) { // Jean-Clauses Begin
+  for (it = jean.clauses.begin(); it != jean.clauses.end(); ++it) {
+    // Jean-Clauses Begin
     if (it->est_vrai == false && it->nb_indet == 1) {
       for (wars = it->litteraux.begin(); wars != it->litteraux.end(); ++wars) {
-        if (valeur(etat, *wars) == faux)
-          cout << "-";
-        if (valeur(etat, *wars) == indeterminee)
-          cout << "/";
-        cout << lit2var(*wars).num << " ";
         if (valeur(etat, *wars) == indeterminee) // star wars
-        {
-          cout << "jedi" << endl;
           return *wars;                          // le retour du jedi
-        }
       }
-      cout << endl;
     }
   }
 
-  for (it2 = etat.valeurs.begin(); it2 != etat.valeurs.end(); ++it2) {
-    if (*it2 == indeterminee)
-    {
-      cout << "vendredi" << endl;
-      return var2lit(var(*it2), true);
-    }
+  for (i = 0; i < etat.valeurs.size(); i++) {
+    if (etat.valeurs[i] == indeterminee)
+      return var2lit(var(i), true);
   }
 
-  cout << "shabbat" << endl;
   return NOLIT;
 }
 
@@ -241,6 +225,7 @@ bool cherche(etat_t & etat, cnf_t & cnf) {
   lit_t lit;
   infos_retour_arriere_t ira;
   val_t res;
+  bool brocoli; // b comme booleen et donc brocoli
 
   lit = choisit_litteral(etat, cnf);
   if (lit == NOLIT)
@@ -259,6 +244,17 @@ bool cherche(etat_t & etat, cnf_t & cnf) {
   retour_arriere(etat, lit, ira, cnf);
   lit = oppose(lit);
   affecte(etat, lit, cnf);
+  res = evaluer_cnf(etat, cnf, lit);
 
-  return cherche(etat, cnf);
+  if (res == faux) {
+    retour_arriere(etat, lit, ira, cnf);
+    return false;
+  }
+
+  brocoli = cherche(etat, cnf);
+
+  if (brocoli == false)
+    retour_arriere(etat, lit, ira, cnf);
+
+  return brocoli;
 }
